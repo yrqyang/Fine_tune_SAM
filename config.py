@@ -5,7 +5,7 @@ import torch
 BASE_PATH = Path('../dataset/uavid/uavid_train')
 VAL_PATH = Path('../dataset/uavid/uavid_val')
 TEST_PATH = Path('../dataset/uavid/uavid_test')
-MODEL_SAVE_PATH = "./models"
+MODEL_SAVE_PATH = "../models"
 
 # Model configurations
 MODEL_TYPE = 'vit_b'
