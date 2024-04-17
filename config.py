@@ -9,7 +9,7 @@ MODEL_SAVE_PATH = "./models"
 
 # Model configurations
 MODEL_TYPE = 'vit_b'
-CHECKPOINT = 'sam_vit_b_01ec64.pth'
+CHECKPOINT = '../sam_vit_b_01ec64.pth'
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Training configurations
