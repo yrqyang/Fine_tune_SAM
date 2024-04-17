@@ -26,11 +26,11 @@ class DataLoader:
             label_paths = sorted(paths['labels'].iterdir())
             for image_path, label_path in zip(image_paths, label_paths):
                 if image_path.stem == label_path.stem:
-                    image, label = self._process_image_label(image_path, label_path)
+                    image, mask, input_size, original_image_size = self._process_image_label(image_path, label_path)
                     transformed_data[image_path.stem] = {
-                        'image': image, 'mask': label,
-                        'original_image_size': image.shape[:2],
-                        'input_size': tuple(image.shape[-2:])
+                        'image': image, 'mask': mask,
+                        'original_image_size': original_image_size,
+                        'input_size': input_size
                     }
         return transformed_data
 
@@ -44,12 +44,16 @@ class DataLoader:
 
         # Apply SAM model-specific preprocessing
         processed_image = self.sam_model.preprocess(transformed_image_torch)
+        original_image_size = image.shape[:2]
+        input_size = tuple(transformed_image_torch.shape[-2:])
 
         # Process the label
         label = cv2.imread(str(label_path), cv2.IMREAD_UNCHANGED)
         label = rgb_to_binary_mask(label)
-        if len(label.shape) == 2:
-            label = torch.from_numpy(label).unsqueeze(0).float().to(self.device)
-        transformed_label = label.unsqueeze(0)
+        if len(label.shape) == 2: # Just H and W dimensions
+            label = torch.from_numpy(label).unsqueeze(0) # Convert to tensor and add channel dimension -> [1, H, W]
 
-        return processed_image, transformed_label
+        label = label.to(self.device).float()
+        transformed_label = label.unsqueeze(0) # Add batch dimension -> [1, 1, H, W] 
+
+        return processed_image, transformed_label, input_size, original_image_size

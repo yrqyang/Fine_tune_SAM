@@ -45,7 +45,6 @@ def process_data(data_point, model, optimizer, loss_fn, train):
     predicted_masks = torch.sigmoid(upscaled_masks.squeeze(1))
 
     gt_mask = gt_mask.squeeze(1)
-
     loss = loss_fn(predicted_masks, gt_mask)
     if train:
         optimizer.zero_grad()
