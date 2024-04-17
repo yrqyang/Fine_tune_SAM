@@ -2,9 +2,9 @@ from pathlib import Path
 import torch
 
 # Path configurations
-BASE_PATH = Path('./dataset/uavid_train')
-VAL_PATH = Path('./dataset/uavid_val')
-TEST_PATH = Path('./dataset/uavid_test')
+BASE_PATH = Path('../dataset/uavid_train')
+VAL_PATH = Path('../dataset/uavid_val')
+TEST_PATH = Path('../dataset/uavid_test')
 MODEL_SAVE_PATH = "./models"
 
 # Model configurations
