@@ -7,7 +7,6 @@ from statistics import mean
 def train_epoch(data, model, optimizer, loss_fn):
     model.train()  # Ensure the model is in training mode
     epoch_losses = []
-    print(data.keys())
     for key in tqdm(data.keys()):
         data_point = data[key]
         loss = process_data(data_point, model, optimizer, loss_fn, train=True)
