@@ -17,12 +17,12 @@ def main():
     # Data loaders
     train_loader = DataLoader(config.BASE_PATH, config.DEVICE, sam_model)
     val_loader = DataLoader(config.VAL_PATH, config.DEVICE, sam_model)
-    test_loader = DataLoader(config.TEST_PATH, config.DEVICE, sam_model)
+    # test_loader = DataLoader(config.TEST_PATH, config.DEVICE, sam_model)
 
     # Load data
     train_data = train_loader.load_data()
     val_data = val_loader.load_data()
-    test_data = test_loader.load_data()
+    # test_data = test_loader.load_data()
 
     # Training and validation loop
     num_epochs = config.NUM_EPOCHS
@@ -34,8 +34,8 @@ def main():
         print(f'Validation Loss after epoch {epoch + 1}: {mean(val_loss)}')
 
     # Testing before saving the model
-    test_loss = validate_epoch(test_data, sam_model, loss_fn)
-    print(f'Test Loss: {mean(test_loss)}')
+    # test_loss = validate_epoch(test_data, sam_model, loss_fn)
+    # print(f'Test Loss: {mean(test_loss)}')
 
     # Save model
     torch.save(sam_model.state_dict(), config.MODEL_SAVE_PATH + "/sam_model.pth")
