@@ -28,7 +28,7 @@ class DataLoader:
                 if image_path.stem == label_path.stem:
                     image, label = self._process_image_label(image_path, label_path)
                     transformed_data[image_path.stem] = {
-                        'image': image, 'label': label,
+                        'image': image, 'mask': label,
                         'original_image_size': image.shape[:2],
                         'input_size': tuple(image.shape[-2:])
                     }
