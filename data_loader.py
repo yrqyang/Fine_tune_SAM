@@ -47,8 +47,6 @@ class DataLoader:
 
         # Process the label
         label = cv2.imread(str(label_path), cv2.IMREAD_UNCHANGED)
-        if label is None:
-            raise FileNotFoundError(f"Unable to load label from the path: {label_path}")
         label = rgb_to_binary_mask(label)
         if len(label.shape) == 2:
             label = torch.from_numpy(label).unsqueeze(0).float().to(self.device)
