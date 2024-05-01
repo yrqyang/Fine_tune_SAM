@@ -8,8 +8,8 @@ TEST_PATH = Path('../dataset/uavid/uavid_test')
 MODEL_SAVE_PATH = "../models"
 
 # Model configurations
-MODEL_TYPE = 'vit_b'
-CHECKPOINT = '../sam_vit_b_01ec64.pth'
+MODEL_TYPE = 'vit_h' # update to .h type pretrained model
+CHECKPOINT = '../sam_vit_h_4b8939.pth'
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Training configurations

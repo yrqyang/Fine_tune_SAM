@@ -1,11 +1,16 @@
 import torch
 from statistics import mean
+from pathlib import Path
 from data_loader import DataLoader
 from segment_anything import sam_model_registry
 import config
 from fine_tuning import train_epoch, validate_epoch
+import wandb
 
 def main():
+    # Initialize wandb
+    wandb.init(project="sam_segmentation_project", entity="yrqyang")
+    
     # Initialize SAM model
     sam_model = sam_model_registry[config.MODEL_TYPE](checkpoint=config.CHECKPOINT)
     sam_model.to(config.DEVICE)
@@ -14,15 +19,22 @@ def main():
     optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
     loss_fn = torch.nn.BCELoss()
 
+    datasets = [
+        {'path': config.BASE_PATH, 'new_dataset': False},
+        {'path': Path('../dataset/epflml'), 'new_dataset': True}
+    ]
+
+    val_dataset = [
+        {'path': config.VAL_PATH, 'new_dataset': False}
+    ]
+
     # Data loaders
-    train_loader = DataLoader(config.BASE_PATH, config.DEVICE, sam_model)
-    val_loader = DataLoader(config.VAL_PATH, config.DEVICE, sam_model)
-    # test_loader = DataLoader(config.TEST_PATH, config.DEVICE, sam_model)
+    train_loader = DataLoader(datasets, config.DEVICE, sam_model)
+    val_loader = DataLoader(val_dataset, config.DEVICE, sam_model)
 
     # Load data
     train_data = train_loader.load_data()
     val_data = val_loader.load_data()
-    # test_data = test_loader.load_data()
 
     # Training and validation loop
     num_epochs = config.NUM_EPOCHS
@@ -33,12 +45,11 @@ def main():
         val_loss = validate_epoch(val_data, sam_model, loss_fn)
         print(f'Validation Loss after epoch {epoch + 1}: {mean(val_loss)}')
 
-    # Testing before saving the model
-    # test_loss = validate_epoch(test_data, sam_model, loss_fn)
-    # print(f'Test Loss: {mean(test_loss)}')
+        # Log losses to wandb
+        wandb.log({"train_loss": mean(train_loss), "val_loss": mean(val_loss)})
 
     # Save model
-    torch.save(sam_model.state_dict(), config.MODEL_SAVE_PATH + "/sam_model.pth")
+    torch.save(sam_model.state_dict(), config.MODEL_SAVE_PATH + "/sam_model_h.pth")
 
 if __name__ == '__main__':
     main()

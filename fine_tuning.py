@@ -30,7 +30,8 @@ def process_data(data_point, model, optimizer, loss_fn, train):
 
     image_embedding = model.image_encoder(input_image)
 
-    sparse_embeddings, dense_embeddings = model.prompt_encoder(points=None, boxes=None, masks=gt_mask)
+    #sparse_embeddings, dense_embeddings = model.prompt_encoder(points=None, boxes=None, masks=gt_mask)
+    sparse_embeddings, dense_embeddings = model.prompt_encoder(points=None, boxes=None, masks=None)
     dense_embeddings_resized = F.interpolate(dense_embeddings, size=(64, 64), mode='bilinear', align_corners=False)
 
     low_res_masks, _ = model.mask_decoder(
