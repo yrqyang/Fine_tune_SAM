@@ -13,6 +13,11 @@ def main():
     
     # Initialize SAM model
     sam_model = sam_model_registry[config.MODEL_TYPE](checkpoint=config.CHECKPOINT)
+
+    # Use multiple GPUs
+    if torch.cuda.device_count() > 1:
+        print(f"Using {torch.cuda.device_count()} GPUs...")
+        sam_model = torch.nn.DataParallel(sam_model)
     sam_model.to(config.DEVICE)
 
     # Set up optimizer and loss function
@@ -20,12 +25,14 @@ def main():
     loss_fn = torch.nn.BCELoss()
 
     datasets = [
-        {'path': config.BASE_PATH, 'new_dataset': False},
-        {'path': Path('../dataset/epflml'), 'new_dataset': True}
+        {'path': config.BASE_PATH, 'new_dataset': False, 'augmentation': False},
+        {'path': Path('../dataset/epflml/training'), 'new_dataset': True, 'augmentation': False},
+        {'path': config.BASE_PATH, 'new_dataset': False, 'augmentation': True}, # Data augmentation on uavid
+        {'path': Path('../dataset/epflml/training'), 'new_dataset': True, 'augmentation': True} # Data augmentation on epflml
     ]
 
     val_dataset = [
-        {'path': config.VAL_PATH, 'new_dataset': False}
+        {'path': config.VAL_PATH, 'new_dataset': False, 'augmentation': False}
     ]
 
     # Data loaders
