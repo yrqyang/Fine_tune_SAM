@@ -5,6 +5,7 @@ from data_loader import DataLoader
 from segment_anything import sam_model_registry
 import config
 from fine_tuning import train_epoch, validate_epoch
+from utils import create_batches
 import wandb
 
 def main():
@@ -15,13 +16,14 @@ def main():
     sam_model = sam_model_registry[config.MODEL_TYPE](checkpoint=config.CHECKPOINT)
 
     # Use multiple GPUs
-    if torch.cuda.device_count() > 1:
-        print(f"Using {torch.cuda.device_count()} GPUs...")
-        sam_model = torch.nn.DataParallel(sam_model)
+    # if torch.cuda.device_count() > 1:
+    #     print(f"Using {torch.cuda.device_count()} GPUs...")
+    #     sam_model = torch.nn.DataParallel(sam_model)
     sam_model.to(config.DEVICE)
 
     # Set up optimizer and loss function
     optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
+    # optimizer = torch.optim.Adam(sam_model.module.mask_decoder.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
     loss_fn = torch.nn.BCELoss()
 
     datasets = [
@@ -45,13 +47,25 @@ def main():
 
     # Training and validation loop
     num_epochs = config.NUM_EPOCHS
+    batch_size = 32  # Define batch size here
+
     for epoch in range(num_epochs):
-        train_loss = train_epoch(train_data, sam_model, optimizer, loss_fn)
-        print(f'Training Loss after epoch {epoch + 1}: {mean(train_loss)}')
+        train_losses = []
+        for batch_data in create_batches(train_data, batch_size):
+            train_loss = train_epoch(batch_data, sam_model, optimizer, loss_fn)
+            train_losses.extend(train_loss)
+        
+        print(f'Training Loss after epoch {epoch + 1}: {mean(train_losses)}')
+        # print(f'Training Loss after epoch {epoch + 1}: {mean(train_loss)}')
 
-        val_loss = validate_epoch(val_data, sam_model, loss_fn)
-        print(f'Validation Loss after epoch {epoch + 1}: {mean(val_loss)}')
-
+        val_losses = []
+        for batch_data in create_batches(val_data, batch_size):
+            val_loss = validate_epoch(batch_data, sam_model, loss_fn)
+            val_losses.extend(val_loss)
+        
+        print(f'Validation Loss after epoch {epoch + 1}: {mean(val_losses)}')    
+        # print(f'Validation Loss after epoch {epoch + 1}: {mean(val_loss)}')
+        
         # Log losses to wandb
         wandb.log({"train_loss": mean(train_loss), "val_loss": mean(val_loss)})
 

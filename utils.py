@@ -13,3 +13,19 @@ def rgb_to_binary_mask(label):
     binary_mask[matches] = 1
 
     return binary_mask
+
+def create_batches(data, batch_size):
+    batch_data = {}
+    count = 0
+
+    for key, value in data.items():
+        batch_data[key] = value
+        count += 1
+
+        if count == batch_size:
+            yield batch_data
+            batch_data = {}
+            count = 0
+
+    if batch_data:  # The last batch if it's not full size
+        yield batch_data
