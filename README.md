@@ -15,7 +15,7 @@ To run the script to train the model,
 
 * Run main.py to train the SAM, and the fine-tuned model will be saved in the given saving path
 
-* Example of Road Segmentation are in the notebook `Road_Segmentation.ipynb`
+* Examples of Road Segmentation are in the notebook `Road_Segmentation.ipynb`
 
 ## Contributing
 
