@@ -114,6 +114,7 @@ def main():
                 multimask_output=False,
                 )
             
+            # Add vehicle mask
             # Path to the results file
             vehicle_mask_name = os.path.splitext(filename)[0]
             vehicle_mask_path = os.path.join(VehicleMask_PATH, f"{vehicle_mask_name}.txt")
@@ -140,10 +141,9 @@ def main():
 
             # Post-process the segmentation mask
             sam_connect_mask = seg_mask.astype(np.uint8)
-            kernel = np.ones((7, 7), np.uint8)
-            eroded_mask = cv2.erode(sam_connect_mask.squeeze(), kernel, iterations=1)
-            dilated_mask = cv2.dilate(eroded_mask, kernel, iterations=10)
-            closed_mask = cv2.morphologyEx(dilated_mask, cv2.MORPH_CLOSE, kernel, iterations=6)
+            kernel = np.ones((5, 5), np.uint8)  # kernel for morphological operations
+            # Perform morphological closing to connect regions
+            closed_mask = cv2.morphologyEx(sam_connect_mask.squeeze(), cv2.MORPH_CLOSE, kernel, iterations=16)
         
             labeled_mask, num_labels = measure.label(closed_mask, return_num=True, background=0)
             label_props = measure.regionprops(labeled_mask)
