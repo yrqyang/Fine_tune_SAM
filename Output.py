@@ -54,26 +54,42 @@ def create_vehicle_mask(bounding_boxes, image_shape):
 
     return vehicle_mask
 
-def create_video_from_images(image_folder, output_video_path):
+def interpolate_frames(frames, target_frame_count):
+    input_frame_count = len(frames)
+    interpolated_frames = []
+    for i in range(target_frame_count):
+        alpha = i * (input_frame_count - 1) / (target_frame_count - 1)
+        left_frame_index = int(np.floor(alpha))
+        right_frame_index = min(left_frame_index + 1, input_frame_count - 1)
+        blend_alpha = alpha - left_frame_index
+        interpolated_frame = cv2.addWeighted(frames[left_frame_index], 1 - blend_alpha, frames[right_frame_index], blend_alpha, 0)
+        interpolated_frames.append(interpolated_frame)
+    return interpolated_frames
+
+def create_video_from_images(image_folder, output_video_path, target_frame_rate=30):
     # Initialize video writer
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
-    frame_size = (1280, 720)  # Specify the unified frame size
-    output_video = cv2.VideoWriter(output_video_path, fourcc, 10.0, frame_size)
+    frame_files = sorted([f for f in os.listdir(image_folder) if f.endswith(".jpg")], key=lambda x: int(x.split('_')[1].split('.')[0]))
 
-    # Process each image in the temporary folder
-    for filename in tqdm(sorted(os.listdir(image_folder), key=lambda x: int(x.split('_')[1].split('.')[0]))):
-        if filename.endswith(".jpg"): 
-            image_path = os.path.join(image_folder, filename)
-            image = cv2.imread(image_path)
+    frames = []
+    for filename in tqdm(frame_files):
+        image_path = os.path.join(image_folder, filename)
+        image = cv2.imread(image_path)
 
-            if image is None:
-                print(f"Error reading image: {image_path}")
-                continue
+        if image is None:
+            print(f"Error reading image: {image_path}")
+            continue
 
-            if image.shape[1] != 1280 or image.shape[0] != 720:
-                image = cv2.resize(image, frame_size)
+        frames.append(image)
+    
+    # Interpolate frames to increase frame rate
+    total_frames_after_interpolation = len(frames) * (target_frame_rate // 10)
+    smooth_frames = interpolate_frames(frames, total_frames_after_interpolation)
 
-            output_video.write(image)
+    output_video = cv2.VideoWriter(output_video_path, fourcc, target_frame_rate)
+
+    for frame in tqdm(smooth_frames):
+        output_video.write(frame)
 
     # Release the video writer
     output_video.release()
