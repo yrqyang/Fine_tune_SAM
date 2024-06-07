@@ -15,7 +15,7 @@ import wandb
 
 
 def main():
-    wandb.init(project="sam_segmentation_project", entity="yrqyang")
+    wandb.init(project="sam_segmentation_project", entity="yrqyang") # modify the wandb username
     # Initialize SAM model
     sam_model = sam_model_registry[config.MODEL_TYPE](checkpoint=config.CHECKPOINT)
 
@@ -30,11 +30,12 @@ def main():
     optimizer = torch.optim.Adam(sam_model.mask_decoder.parameters(), lr=config.LEARNING_RATE, weight_decay=config.WEIGHT_DECAY)
     loss_fn = torch.nn.BCELoss()
 
+    # Training Datasets & Augmentation
     datasets = [
         {'path': config.BASE_PATH, 'new_dataset': False, 'augmentation': False},
-        {'path': Path('/home/student/RoadSegmentation/RoadSegmentation/dataset/epflml/training'), 'new_dataset': True, 'augmentation': False},
+        {'path': Path('/home/student/RoadSegmentation/dataset/epflml/training'), 'new_dataset': True, 'augmentation': False},
         {'path': config.BASE_PATH, 'new_dataset': False, 'augmentation': True}, # Data augmentation on uavid
-        {'path': Path('/home/student/RoadSegmentation/RoadSegmentation/dataset/epflml/training'), 'new_dataset': True, 'augmentation': True} # Data augmentation on epflml
+        {'path': Path('/home/student/RoadSegmentation/dataset/epflml/training'), 'new_dataset': True, 'augmentation': True} # Data augmentation on epflml
     ]
 
     val_dataset = [
@@ -53,21 +54,10 @@ def main():
     num_epochs = config.NUM_EPOCHS
 
     for epoch in range(num_epochs):
-        # train_losses = []
-        # for batch_data in create_batches(train_data, batch_size):
-        #     batch_data = batch_data.to(config.DEVICE)
-        #     train_loss = train_epoch(batch_data, sam_model, optimizer, loss_fn)
-        #     train_losses.extend(train_loss)
+
         train_losses = train_epoch(train_loader, sam_model, optimizer, loss_fn, config.DEVICE)
         
-        # if rank == 0:  # Only the master process
         print(f'Training Loss after epoch {epoch + 1}: {mean(train_losses)}')
-        # print(f'Training Loss after epoch {epoch + 1}: {mean(train_loss)}')
-
-        # val_losses = []
-        # for batch_data in create_batches(val_data, batch_size):
-        #     val_loss = validate_epoch(batch_data, sam_model, loss_fn)
-        #     val_losses.extend(val_loss)
 
         val_losses = validate_epoch(val_loader, sam_model, loss_fn, config.DEVICE)
         
