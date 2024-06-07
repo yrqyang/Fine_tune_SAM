@@ -2,10 +2,10 @@ from pathlib import Path
 import torch
 
 # Path configurations
-BASE_PATH = Path('/home/student/RoadSegmentation/RoadSegmentation/dataset/uavid/uavid_train')
-VAL_PATH = Path('/home/student/RoadSegmentation/RoadSegmentation/dataset/uavid/uavid_val')
-TEST_PATH = Path('/home/student/RoadSegmentation/RoadSegmentation/dataset/uavid/uavid_test')
-MODEL_SAVE_PATH = "/home/student/RoadSegmentation/RoadSegmentation/models"
+BASE_PATH = Path('/home/student/RoadSegmentation/dataset/uavid/uavid_train')
+VAL_PATH = Path('/home/student/RoadSegmentation/dataset/uavid/uavid_val')
+TEST_PATH = Path('/home/student/RoadSegmentation/dataset/uavid/uavid_test')
+MODEL_SAVE_PATH = "/home/student/RoadSegmentation/models"
 
 # Model configurations
 MODEL_TYPE = 'vit_h' # update to .h type pretrained model
