@@ -83,7 +83,8 @@ def create_video_from_images(image_folder, output_video_path, target_frame_rate=
         frames.append(image)
     
     # Interpolate frames to increase frame rate
-    total_frames_after_interpolation = len(frames) * (target_frame_rate // 10)
+    original_frame_rate = 5  # 25 (original fps) /5 (sample frequency) = 5
+    total_frames_after_interpolation = len(frames) * (target_frame_rate // original_frame_rate)
     smooth_frames = interpolate_frames(frames, total_frames_after_interpolation)
 
     output_video = cv2.VideoWriter(output_video_path, fourcc, target_frame_rate)
@@ -154,6 +155,7 @@ def main():
             vehicle_mask = create_vehicle_mask(boxes, np.array(image).shape[0:2])
 
             seg_mask = sam_masks + vehicle_mask # Combine extracted vehicle mask with the road mask
+            seg_mask[seg_mask == 2] = 1 # the overlapping pixels of two masks
 
             # Post-process the segmentation mask
             sam_connect_mask = seg_mask.astype(np.uint8)
@@ -171,14 +173,18 @@ def main():
             sam_connect_mask = filtered_mask[np.newaxis, ...]
 
             # Mask on image
-            plt.figure(figsize=(10, 10))
+            height, width = image.shape[:2]
+            figsize = width / 100, height / 100  # 100 DPI, to preserve the resolution
+    
+            plt.figure(figsize=figsize, dpi=100)
+            # plt.figure(figsize=(10, 10))
             plt.imshow(image)
             show_mask(sam_connect_mask, plt.gca())
             plt.axis('off')
 
             # Save the segmented image to a file and add to video
             seg_path = os.path.join(TEMP_SAVING_PATH, f"{filename}")
-            plt.savefig(seg_path, bbox_inches='tight', pad_inches=0)
+            plt.savefig(seg_path, bbox_inches='tight', pad_inches=0, dpi=100) # same as the setting above
             plt.close()
 
     create_video_from_images(TEMP_SAVING_PATH, output_video_path)
