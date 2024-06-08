@@ -9,7 +9,7 @@ MODEL_SAVE_PATH = "/home/student/RoadSegmentation/models"
 
 # Model configurations
 MODEL_TYPE = 'vit_h' # update to .h type pretrained model
-CHECKPOINT = '/home/student/RoadSegmentation/sam_vit_h_4b8939.pth'
+CHECKPOINT = '/home/student/RoadSegmentation/pretrained_model/sam_vit_h_4b8939.pth'
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 # Training configurations
