@@ -52,7 +52,7 @@ The files are arranged in the following structure.
 
 ## Extract frames from video  
 
-Run the `frame_extraction.py` in `utils`. The frame images are stored in the dataset.  
+Run the `frame_extraction.py` in `utils`. The frame images are saved in the dataset.  
 
 ## Training  
 
@@ -76,7 +76,7 @@ Utilizing the fine-tuned SAM and the extracted vehicle masks, the segmentation m
 
 ## Training Environment  
 
-# Key Libraries and Versions in the Experiment  
+ GPU NVIDIA GeForce RTX 2080 Ti. Dependencies:  
 
 | **Library**               | **Version**                |
 |---------------------------|----------------------------|
