@@ -3,8 +3,8 @@
 In this project, the pretrained SAM model was finetuned using the UAVid and EPFL-ML datasets and data augmentation. The segmented road mask was post-processed by adding the vehicle masks generated with [Oriented-RCNN](https://github.com/Mengchen-NERV/Oriented-R-CNN-for-Object-Detection) and applying morphological closing operation. The segmentation result is not satisfying enough but a good stepstone for future study. 
 
 <p align="center">
-  <img src="images/frame_0.jpg" alt="Segmentation Example 1" width="45%" />
-  <img src="images/frame_494.jpg" alt="Segmentation Example 2" width="45%" />
+  <img src="img/frame_0.jpg" alt="Segmentation Example 1" width="45%" />
+  <img src="img/frame_494.jpg" alt="Segmentation Example 2" width="45%" />
 </p>
 
 ## Installation  
