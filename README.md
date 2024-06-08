@@ -105,6 +105,8 @@ Utilizing the fine-tuned SAM and the extracted vehicle masks, the segmentation m
 
 ## Failure Cases  
 
+The limitation of the fine-tuned SAM is presented in the images below. Some roads are not segmented out, and open ground regions are misclassified as roads.  
+
 <p align="center">
   <img src="img/frame_457.jpg" alt="Segmentation Example 1" width="45%" />
   <img src="img/frame_460.jpg" alt="Segmentation Example 2" width="45%" />
