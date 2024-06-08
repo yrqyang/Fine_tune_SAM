@@ -50,7 +50,7 @@ The files are arranged in the following structure.
     - README.md  
   - ...
 
-## Extract frames from video  
+## Extract Frames from Video  
 
 Run the `frame_extraction.py` in `utils`. The frame images are saved in the dataset.  
 
@@ -71,6 +71,8 @@ Run the `frame_extraction.py` in `utils`. The frame images are saved in the data
 Run the `extract_vehicle_mask.py` in `utils`.  The results are saved in `Vehicle_Detection`.  
 
 ## Prediction and Output  
+
+Run the `output.py` in `utils`.  
 
 Utilizing the fine-tuned SAM and the extracted vehicle masks, the segmentation masks are predicted, post-processed, and written to the video.  
 
@@ -99,3 +101,16 @@ Utilizing the fine-tuned SAM and the extracted vehicle masks, the segmentation m
 | MMRotate                  | 0.3.4                      |
 | WandB                     | 0.17.0                     |
 | **Segment Anything Model** | GitHub commit 6fdee8f      |
+
+
+## Failure Cases  
+
+<p align="center">
+  <img src="img/frame_457.jpg" alt="Segmentation Example 1" width="45%" />
+  <img src="img/frame_460.jpg" alt="Segmentation Example 2" width="45%" />
+</p>
+
+## Future Work
+* A quantatative evaluation is needed after annotating part of the dataset  
+* The segmentation masks can be used as training data for further finetuning or to build a self-learning model 
+* The detected vehicle masks can be added in the pre-processing to build an extra layer for training
