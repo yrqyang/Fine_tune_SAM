@@ -9,10 +9,15 @@ In this project, the pretrained SAM model was finetuned using the UAVid and EPFL
 
 ## Installation  
 
-1. Clone this repository, and then install the dependencies by  
+1. Setup 
 
 ```
-pip install -r /path/to/requirements.txt
+git clone https://github.com/yrqyang/SAM_for_ROAD.git
+cd SAM_for_ROAD
+python -m venv venv
+source venv/bin/activate  # On Linux/Mac
+.\venv\Scripts\activate   # On Windows
+pip install -r requirements.txt
 ```
 
 2. Download the [UAVid](https://uavid.nl/) and [EPFL-ML](https://www.aicrowd.com/challenges/epfl-ml-road-segmentation) dataset.  
